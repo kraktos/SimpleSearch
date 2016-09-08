@@ -133,12 +133,9 @@ class SearchIndex:
         Basically looking up the inverted index
         """
         if query_term in self.inverted_index:
-            return [doc_id for doc_id in self.inverted_index[query_term]]
+            return self.inverted_index[query_term]
         else:
             return []
-
-    def intersection(first, *others):
-        return set(first).intersection(*others)
 
     def search(self, phrase):
         """
@@ -149,6 +146,10 @@ class SearchIndex:
         for term in query_terms.split():
             result += self.single_term_query(term)
 
-        # get the duplicate ones, meaning, both terms share those documents
+        # get the duplicate ones, meaning, multiple query terms share those documents
         intersection = set([x for x in result if result.count(x) > 1])
-        self.rank_results(list(intersection), query_terms)
+
+        if len(intersection) == 0:
+            self.rank_results(result, query_terms)
+        else:
+            self.rank_results(list(intersection), query_terms)
