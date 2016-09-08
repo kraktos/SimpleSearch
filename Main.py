@@ -36,7 +36,7 @@ if __name__ == "__main__":
 
         # query the index,
         searcher = SearchIndex(indexer)
-        searcher.search("limited four")
+        searcher.search("Pop music")
 
     except Exception as ex:
         raise Exception("Please provide the file to index..")
