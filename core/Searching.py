@@ -10,7 +10,7 @@ class SearchIndex:
         self.inverted_index = self.built_index.complete_inverted_index
         self.titles_map = self.built_index.id_titles_map
 
-    def create_vector_space_model(self, result_docs):
+    def doc_vect(self, result_docs):
         """
         takes the result set of documents and creates a vector representation out of it.
         INPUT
@@ -34,6 +34,7 @@ class SearchIndex:
 
             # hash map it
             temp_dict[doc] = vectorised_doc
+
         return temp_dict
 
     def query_freq(self, term, query):
@@ -53,7 +54,7 @@ class SearchIndex:
             temp[i] = self.query_freq(term, query)
         return temp
 
-    def query_vec(self, query):
+    def query_vect(self, query):
         """
         Vectorizes a given query.
         """
@@ -74,6 +75,11 @@ class SearchIndex:
 
         return final_query_vector
 
+    def dot_product(self, vector_1, vector_2):
+        if len(vector_1) != len(vector_2):
+            return 0
+        return sum([x * y for x, y in zip(vector_1, vector_2)])
+
     def do_cosine_similarity(self, vector_1, vector_2):
         """
         simple cosine similarity between 2 vectors
@@ -88,46 +94,61 @@ class SearchIndex:
         """
         ranking algorithm. Basically matches two vectorised representation of the query and the resultant document list
         """
+        start_time = begin_time(None)
+
         # vectorize the result documents with tf-idf scores
-        result_docs_vectorised = self.create_vector_space_model(result_set)
+        result_docs_vectorised = self.doc_vect(result_set)
 
         # vectorize the query terms with tf-idf again
-        query_vectorised = self.query_vec(query_terms)
+        query_vectorised = self.query_vect(query_terms)
+
+        end_time("Vectored", start_time)
+
+        start_time = begin_time(None)
 
         # find the cosine similarity between result vectors and query vector
-        results = [[self.do_cosine_similarity(result_docs_vectorised[result], query_vectorised), result] for result in
+        results = [[self.dot_product(result_docs_vectorised[result], query_vectorised), result] for result in
                    result_set]
 
         # sort by descending similarity values
         results.sort(key=lambda x: x[0], reverse=True)
+
+        end_time("Resulted", start_time)
 
         # grab the document ids
         results = [x[1] for x in results]
 
         # fancy printing
         print "Search Results:\n--------------"
+        cnt = 0
         for result in results:
+            cnt += 1
             print "{}\t{}".format(result, self.titles_map[result])
+            if cnt == 10:
+                break
 
     def single_term_query(self, query_term):
         """
         Returns the documents where ONE particular query term can be found.
         Basically looking up the inverted index
         """
-        if query_term in self.inverted_index.keys():
+        if query_term in self.inverted_index:
             return [doc_id for doc_id in self.inverted_index[query_term]]
         else:
             return []
+
+    def intersection(first, *others):
+        return set(first).intersection(*others)
 
     def search(self, phrase):
         """
         Generic search function. Splits query phrases and retrieves individual lists.
         """
-        start_time = begin_time(None)
         query_terms = re.sub("[^\w]", " ", phrase).lower()
         result = []
         for term in query_terms.split():
             result += self.single_term_query(term)
 
-        self.rank_results(list(set(result)), query_terms)
-        end_time("Results Fetching", start_time)
+        # get the duplicate ones, meaning, both terms share those documents
+        intersection = set([x for x in result if result.count(x) > 1])
+        self.rank_results(list(intersection), query_terms)
