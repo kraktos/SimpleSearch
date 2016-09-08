@@ -54,7 +54,7 @@ class BuiltFileIndex:
             w33 => [doc101, doc433, ...]
         """
         start_time = begin_time("Inverted Index Building")
-        id_tokens_dict = {k: v for k, v in id_tokens_dict.items() if 10 <= k <= 30}
+        id_tokens_dict = {k: v for k, v in id_tokens_dict.items() if 10 <= k <= 1000}
         try:
             for doc_id, tokens in id_tokens_dict.items():
 
@@ -109,13 +109,17 @@ class BuiltFileIndex:
         for each unique word in each document.
         We use here the tf and df to compute the score
         """
-        # for document in self.id_titles_map.keys():
+
+        start_time = begin_time("tf-idf score computation")
+
         for term in self.complete_inverted_index.keys():
-            # self.tf[document][term] = self.compute_tf(term, document)
             if term in self.df.keys():
                 self.idf[term] = self.idf_func(len(self.id_titles_map.keys()), self.df[term])
             else:
                 self.idf[term] = 0
+
+        end_time("tf-idf score computation", start_time)
+
         return self.df, self.tf, self.idf
 
     def get_tfidf_scores(self, term, document):

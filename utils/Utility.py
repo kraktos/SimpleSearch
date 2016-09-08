@@ -3,7 +3,8 @@ import time
 
 
 def begin_time(message):
-    print "\n{} started..".format(message)
+    if message:
+        print "\n{} started..".format(message)
     return time.time()
 
 

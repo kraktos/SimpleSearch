@@ -28,8 +28,6 @@ class SearchIndex:
             vectorised_doc = [0] * len(unique_words)
             try:
                 for ind, term in enumerate(unique_words):
-                    if term == 'pardon':
-                        print ""
                     vectorised_doc[ind] = self.built_index.get_tfidf_scores(term, doc)
             except Exception as ex:
                 raise Exception("Exception while vectorising", ex)
@@ -107,6 +105,7 @@ class SearchIndex:
         results = [x[1] for x in results]
 
         # fancy printing
+        print "Search Results:\n--------------"
         for result in results:
             print "{}\t{}".format(result, self.titles_map[result])
 
@@ -124,11 +123,11 @@ class SearchIndex:
         """
         Generic search function. Splits query phrases and retrieves individual lists.
         """
-        start_time = begin_time("Searching Index")
+        start_time = begin_time(None)
         query_terms = re.sub("[^\w]", " ", phrase).lower()
         result = []
         for term in query_terms.split():
             result += self.single_term_query(term)
 
         self.rank_results(list(set(result)), query_terms)
-        end_time("Searching Index", start_time)
+        end_time("Results Fetching", start_time)

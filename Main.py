@@ -6,6 +6,7 @@ This file primarily performs
 (c) using indices to return search results for a given query
 """
 import time
+import sys
 from optparse import OptionParser
 
 import utils.Utility as utility
@@ -36,7 +37,15 @@ if __name__ == "__main__":
 
         # query the index,
         searcher = SearchIndex(indexer)
-        searcher.search("Pop music")
+
+        var = ""
+        while var != 'q':
+            var = raw_input("Enter search item (press q to exit). ")
+            if var.lower() == 'q':
+                sys.exit()
+
+            # fire the index search
+            searcher.search(var)
 
     except Exception as ex:
         raise Exception("Please provide the file to index..")
