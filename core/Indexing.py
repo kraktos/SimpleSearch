@@ -18,7 +18,6 @@ class BuiltFileIndex:
         self.id_tokens_map = {}
         self.id_titles_map = {}
         self.complete_inverted_index = {}
-        # self.generate_all_tfidf()
 
     def build_id_to_tokens_dict(self, file_df):
         """
@@ -54,27 +53,33 @@ class BuiltFileIndex:
             w33 => [doc101, doc433, ...]
         """
         start_time = begin_time("Inverted Index Building")
-        id_tokens_dict = {k: v for k, v in id_tokens_dict.items() if 10 <= k <= 1000}
+        id_tokens_dict = {k: v for k, v in id_tokens_dict.items() if 10 <= k <= 20000}
         try:
+            cnt = 0
             for doc_id, tokens in id_tokens_dict.items():
-
+                cnt += 1
                 # in each document, find the term (token) frequency
                 self.tf[doc_id] = dict(Counter(tokens))
 
                 for token in tokens:
                     # track in how many documents the token appears, needed for idf
-                    if token in self.df.keys():
+                    if token in self.df:
                         self.df[token] += 1
                     else:
                         self.df[token] = 1
 
                     # now create the inverted indices
                     if token in self.complete_inverted_index:
-                            docs_for_token = self.complete_inverted_index[token]
-                            if doc_id not in docs_for_token:
-                                docs_for_token.append(doc_id)
+                        # existing one, update list
+                        docs_for_token = self.complete_inverted_index[token]
+                        if doc_id not in docs_for_token:
+                            docs_for_token.append(doc_id)
                     else:
+                        # fresh entry
                         self.complete_inverted_index[token] = [doc_id]
+
+                if cnt % 1000 == 0 and cnt > 1000:
+                    print "{}% completed".format(round(100 * cnt/float(len(id_tokens_dict))), 2)
         except Exception as ex:
             raise Exception("Exception creating inverted index", ex)
 
@@ -96,10 +101,10 @@ class BuiltFileIndex:
 
         self.generate_all_tfidf()
 
-    def idf_func(self, N, N_t):
+    def get_idf_score(self, N, N_t):
         if N_t != 0:
-            # avoiding division by 0
-            return math.log(N / (1 + N_t))
+            # idf smoothed
+            return math.log(1 + N/float(N_t))
         else:
             return 0
 
@@ -112,11 +117,14 @@ class BuiltFileIndex:
 
         start_time = begin_time("tf-idf score computation")
 
-        for term in self.complete_inverted_index.keys():
-            if term in self.df.keys():
-                self.idf[term] = self.idf_func(len(self.id_titles_map.keys()), self.df[term])
-            else:
-                self.idf[term] = 0
+        for term in self.complete_inverted_index:
+            try:
+                if term in self.df:
+                    self.idf[term] = self.get_idf_score(len(self.id_titles_map), self.df[term])
+                else:
+                    self.idf[term] = 0
+            except Exception as ex:
+                raise Exception("Exception in tf-idf", ex)
 
         end_time("tf-idf score computation", start_time)
 
