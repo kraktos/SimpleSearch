@@ -7,6 +7,8 @@ from utils.Utility import begin_time, end_time
 from collections import Counter
 import math
 import Setup as setup
+from nltk.corpus import stopwords
+from nltk import PorterStemmer
 
 
 class BuiltFileIndex:
@@ -19,6 +21,8 @@ class BuiltFileIndex:
         self.id_tokens_map = {}
         self.id_titles_map = {}
         self.complete_inverted_index = {}
+        self.cached_stop_words = set(stopwords.words("english"))
+        self.stemmer = PorterStemmer()
 
     def build_id_to_tokens_dict(self, file_df):
         """
@@ -34,10 +38,19 @@ class BuiltFileIndex:
             # key is the document id,
             # value is the list of words in that document
             # No stemming and stopwords removal yet
-            self.id_tokens_map[row['doc_id']] = re.sub("[^\w]", " ", row['doc_body'].lower()).split()
+            content = re.sub("[^\w]", " ", row['doc_body'].lower())
+
+            clean_content = [self.stemmer.stem(word.rstrip().lstrip()) for word in content.lower().split() if
+                             word not in self.cached_stop_words and len(word) > 0]
+            self.id_tokens_map[row['doc_id']] = clean_content
 
             # simultaneously maintain an id to title mapping for results display
             self.id_titles_map[row['doc_id']] = row['doc_title']
+
+            perc_completed = 100 * index / float(len(file_df))
+            if perc_completed > setup.data_set_limit:
+                print "indexed {} documents".format(index)
+                break
 
         end_time("Tokenising the documents", start_time)
 
@@ -53,8 +66,6 @@ class BuiltFileIndex:
             w11 => [doc1, doc33, ...]
             w33 => [doc101, doc433, ...]
         """
-        start_time = begin_time("Inverted Index Building")
-        # id_tokens_dict = {k: v for k, v in id_tokens_dict.items() if k <= 1000}
         try:
             cnt = 0
             for doc_id, tokens in id_tokens_dict.items():
@@ -79,18 +90,13 @@ class BuiltFileIndex:
                         # fresh entry
                         self.complete_inverted_index[token] = [doc_id]
 
-                perc_completed = 100 * cnt/float(len(id_tokens_dict))
-
-                if perc_completed > setup.data_set_limit:
-                    break
+                perc_completed = 100 * cnt / float(len(id_tokens_dict))
 
                 if cnt % 10000 == 0 and cnt > 10000:
                     print "{}% completed".format(round(perc_completed), 2)
 
         except Exception as ex:
             raise Exception("Exception creating inverted index", ex)
-
-        end_time("Inverted Index Building", start_time)
 
     def create_inverted_index(self, input_file):
         """
@@ -100,6 +106,8 @@ class BuiltFileIndex:
         file_df = pd.read_csv(input_file, sep='\t',
                               names=["doc_id", "doc_title", "doc_body"])
 
+        start_time = begin_time("Inverted Index Building")
+
         # first create id to tokens dictionary
         self.build_id_to_tokens_dict(file_df)
 
@@ -108,10 +116,13 @@ class BuiltFileIndex:
 
         self.generate_all_tfidf()
 
+        print len(self.complete_inverted_index)
+        end_time("Inverted Index Building", start_time)
+
     def get_idf_score(self, N, N_t):
         if N_t != 0:
             # idf smoothed
-            return math.log(1 + N/float(N_t))
+            return math.log(1 + N / float(N_t))
         else:
             return 0
 

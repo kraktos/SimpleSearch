@@ -42,7 +42,7 @@ class SearchIndex:
             except Exception as ex:
                 raise Exception("Exception while vectorising", ex)
 
-        end_time("only docs ", start_time)
+        # end_time("only docs ", start_time)
 
         return temp_dict
 
@@ -115,10 +115,6 @@ class SearchIndex:
         # vectorize the query terms with tf-idf again
         query_vectorised = self.query_vect(query_terms)
 
-        end_time("Vectored", start_time)
-
-        start_time = begin_time(None)
-
         # find the cosine similarity between result vectors and query vector
         results = [[self.dot_product(result_docs_vectorised[result], query_vectorised), result] for result in
                    result_set]
@@ -158,7 +154,12 @@ class SearchIndex:
         query_terms = re.sub("[^\w]", " ", phrase).lower()
         result = []
         for term in query_terms.split():
-            result += self.single_term_query(term)
+            # remove stopwords from query
+            if term not in self.built_index.cached_stop_words:
+                # stem words
+                term = self.built_index.stemmer.stem(term)
+
+                result += self.single_term_query(term)
 
         # get the duplicate ones, meaning, multiple query terms share those documents
         intersection = set([x for x in result if result.count(x) > 1])

@@ -54,6 +54,8 @@ It starts the task with indexing the file first, then presents an interactive se
 
 ## Discussion
 * What is the conceptual approach?
+  + **Language processing**: I used nltk package
+   for stemming and stopword removal. All the document content undergo this cleansing process. The same query terms undergo the same stemming and stopwords removal.
   + **Indexing**: The core idea is to define inverted indices for the words in the corpus.
   Each row in the input file is essentially a document, document id, the document title and the document body.
   The document body is basically a set of words or tokens. In this step, an inverted index or postings for each *unique* word appearing
@@ -91,6 +93,15 @@ It starts the task with indexing the file first, then presents an interactive se
    15 | 114.9356          | 0.003  | 8.468
    20 | 201.9099        | 0.0068  | 10.9497
 
+
+   data size     | index  | search  | rank
+   --- |---| ---|---
+   1 | 115.0315         | 0.0002  | 0.0886
+   5 | 115.2428          | 0.0007  | 3.8074
+   10 | 117.2266         | 0.0021 | 9.3813
+   15 | 125.8265         | 0.0039  | 19.8821
+   20 | 201.9099        | 0.0068  | 10.9497
+
 * What is the complexity?
   + **Indexing**: Let us consider a corpus contains *N* unique terms spread over *D* total documents.
   Under worst case, all the unique terms are present in each document. Hence, to create an inverted index for each term, complexity is O(N*D)
@@ -103,6 +114,5 @@ It starts the task with indexing the file first, then presents an interactive se
   + for very large inverted indices, in-memory solutions would fail. Bit-compression may help.
 
 * What improvements would you make, and in what order of priority?
-  + Stemming: stem all words in corpus
-  + Stop words removal: through away common english stop words. These 2 will reduce the search space a lot.
   + Even further, index partioning over multiple nodes. So, clusters might help here.
+  + parallelized indexing with threading
