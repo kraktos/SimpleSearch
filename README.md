@@ -81,12 +81,21 @@ It starts the task with indexing the file first, then presents an interactive se
   + indexing time vs query time. If indexing is slow, queries will be faster. And vice versa.
 
 * What's the runtime performance?
+  I present a table here.
+
+   data size     | index         | search  | rank
+   --- |---| ---|---
+   1 | 1.62          | 0.0001  | 0.1305
+   5 | 16.32          | 0.0007  | 1.3124
+   10 | 54.1322         | 0.0021 | 3.899
+   15 | 114.9356          | 0.003  | 8.468
+   20 | 201.9099        | 0.0068  | 10.9497
 
 * What is the complexity?
   + **Indexing**: Let us consider a corpus contains *N* unique terms spread over *D* total documents.
   Under worst case, all the unique terms are present in each document. Hence, to create an inverted index for each term, complexity is O(N*D)
   + **Searching**: This is O(1) for each query term. If query is of length *Q* terms, it is O(Q).
-  + **Ranking**: if all the documents are retrieved for a query term, worst case it is O(D*N). Since, for each document, we vectorize on the vector space of size *N*
+  + **Ranking**: if all the documents are retrieved for a query term, worst case it is O(DN). Since, for each document, we vectorize on the vector space of size *N*
 
 * Where are the bottlenecks?
   + With some terms the inverted index can be very large. Vectorizing all those documents over the large space takes time.
