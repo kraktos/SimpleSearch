@@ -6,6 +6,7 @@ import pandas as pd
 from utils.Utility import begin_time, end_time
 from collections import Counter
 import math
+import Setup as setup
 
 
 class BuiltFileIndex:
@@ -78,8 +79,14 @@ class BuiltFileIndex:
                         # fresh entry
                         self.complete_inverted_index[token] = [doc_id]
 
+                perc_completed = 100 * cnt/float(len(id_tokens_dict))
+
+                if perc_completed > setup.data_set_limit:
+                    break
+
                 if cnt % 10000 == 0 and cnt > 10000:
-                    print "{}% completed".format(round(100 * cnt/float(len(id_tokens_dict))), 2)
+                    print "{}% completed".format(round(perc_completed), 2)
+
         except Exception as ex:
             raise Exception("Exception creating inverted index", ex)
 

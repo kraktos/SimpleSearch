@@ -126,7 +126,7 @@ class SearchIndex:
         # sort by descending similarity values
         results.sort(key=lambda x: x[0], reverse=True)
 
-        end_time("Resulted", start_time)
+        end_time("Ranking", start_time)
 
         # grab the document ids
         results = [x[1] for x in results]
@@ -153,6 +153,8 @@ class SearchIndex:
         """
         Generic search function. Splits query phrases and retrieves individual lists.
         """
+        start_time = begin_time("Document search")
+
         query_terms = re.sub("[^\w]", " ", phrase).lower()
         result = []
         for term in query_terms.split():
@@ -160,6 +162,8 @@ class SearchIndex:
 
         # get the duplicate ones, meaning, multiple query terms share those documents
         intersection = set([x for x in result if result.count(x) > 1])
+
+        end_time("Document search", start_time)
 
         if len(intersection) == 0:
             if len(query_terms.split()) <= 1: # phrase query

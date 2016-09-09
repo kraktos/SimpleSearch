@@ -76,7 +76,11 @@ It starts the task with indexing the file first, then presents an interactive se
   And the rest is just ranking the documents by decreasing similarity score.
 
 * What are the trade-offs?
+It can be possible that the inverted index can be very large. Hence, to have a complete in-memory index might be a problem.
+So for extremely large data sets, alternatives need to put in place. Bit-compressions, distributed indexing might be helpful.
+
 * What's the runtime performance?
+
 * What is the complexity?
 * Where are the bottlenecks?
 * What improvements would you make, and in what order of priority?
