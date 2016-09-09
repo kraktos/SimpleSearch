@@ -57,14 +57,24 @@ It starts the task with indexing the file first, then presents an interactive se
   The document body is basically a set of words or tokens. In this step, an inverted index or postings for each *unique* word appearing
   in the corpus is developed by finding in which documents (represented by document ids) the token appears. It finally looks like,
   ```
-  "music" -> [1, 22, 45, 9090, ...]
-  "america" -> [2, 3, 221, 5342, ...]
+  "music" -> [1, 2, 11, 22, 45, 9090, ...]
+  "pop" -> [2, 3, 10, 11, 221, 5342, ...]
   ...
   ```
   + **Searching**: Given a query term, all the postings for the query terms are retrieved.
   In case of phrase query, individually all the lists are retrieved and an intersection of those lists are done. This intersection of values
-  gives all those documents where all the terms in the query appear.
-  + Ranking
+  gives all those documents where all the terms in the query appear. With the above example,
+  looking for "pop music" will give us document 2. (intersection of the above 2 lists)
+  ```
+  "pop music" -> [2, 11]
+  ```
+  + **Ranking**: Retrieving a set of documents is not just enough but ranking them in the order of
+  relevance is important. In order to do this, the query and the documents retrieved are represented in a vector space with a large number of dimensions.
+  Ideally, the number of unique terms in the corpus defines the dimension. For example, the final resultant documents, 2 and 11 wil have vector representations in such a space.
+  But trick is, instead of just putting a 1 in the "music" dimension for doc 2 is wrong. We substitute that with the *tf-idf* score for that term in that document. It captures both, how popular is the word "music" in doc 2 and how popular is "music" in the whole corpus.
+  Once, having such a vector representaion for documents and queries, it is easy to define a dot product to find which documents are most similar.
+  And the rest is just ranking the documents by decreasing similarity score.
+
 * What are the trade-offs?
 * What's the runtime performance?
 * What is the complexity?
