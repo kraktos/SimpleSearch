@@ -72,21 +72,21 @@ It starts the task with indexing the file first, then presents an interactive se
   relevance is important. In order to do this, the query and the documents retrieved are represented in a vector space with a large number of dimensions.
   Ideally, the number of unique terms in the corpus defines the dimension. For example, the final resultant documents, 2 and 11 wil have vector representations in such a space.
   But trick is, instead of just putting a 1 in the "music" dimension for doc 2 is wrong. We substitute that with the *tf-idf* score for that term in that document. It captures both, how popular is the word "music" in doc 2 and how popular is "music" in the whole corpus.
-  Once, having such a vector representaion for documents and queries, it is easy to define a dot product to find which documents are most similar.
+  Once, having such a vector representation for documents and queries, it is easy to define a dot product to find which documents are most similar.
   And the rest is just ranking the documents by decreasing similarity score.
 
 * What are the trade-offs?
-  + Its fast, in memory and based on dictionary lookups.
-  + But, if new documents arrive, index building is not incremental. Needs to be re-indexed.
+  + indexing time vs query time. If indexing is slow, queries will be faster. And vice versa.
 
 * What's the runtime performance?
 
 * What is the complexity?
 * Where are the bottlenecks?
-  + With very common terms the inverted index can be very large. Vectorizing all those documents over the large space takes time.
-
+  + With some terms the inverted index can be very large. Vectorizing all those documents over the large space takes time.
+  + If new documents arrive, index building is not incremental. Needs to be re-indexed.
+  + for very large inverted indices, in-memory solutions would fail. Bit-compression may help.
 
 * What improvements would you make, and in what order of priority?
   + Stemming: stem all words in corpus
   + Stop words removal: through away common english stop words. These 2 will reduce the search space a lot.
-  +
+  + Even further, index partioning over multiple nodes. So, clusters might help here.
