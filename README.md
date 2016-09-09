@@ -77,12 +77,16 @@ It starts the task with indexing the file first, then presents an interactive se
 
 * What are the trade-offs?
   + Its fast, in memory and based on dictionary lookups.
-  + But, it can be possible that the inverted index can be very large. Hence, to have a complete in-memory index might be a problem.
-    So for extremely large data sets, alternatives need to put in place. Bit-compressions, distributed indexing might be helpful.
-  + Also, if new documents arrive, index building is not incremental. Needs to be re-indexed.
+  + But, if new documents arrive, index building is not incremental. Needs to be re-indexed.
 
 * What's the runtime performance?
 
 * What is the complexity?
 * Where are the bottlenecks?
+  + With very common terms the inverted index can be very large. Vectorizing all those documents over the large space takes time.
+
+
 * What improvements would you make, and in what order of priority?
+  + Stemming: stem all words in corpus
+  + Stop words removal: through away common english stop words. These 2 will reduce the search space a lot.
+  +
