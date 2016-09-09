@@ -114,9 +114,9 @@ class BuiltFileIndex:
         # use that to find which tokens occur in which documents
         self.make_indices(self.id_tokens_map)
 
+        # keep in memory the tf, idf scores
         self.generate_all_tfidf()
 
-        print len(self.complete_inverted_index)
         end_time("Inverted Index Building", start_time)
 
     def get_idf_score(self, N, N_t):

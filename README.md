@@ -55,7 +55,7 @@ It starts the task with indexing the file first, then presents an interactive se
 ## Discussion
 * What is the conceptual approach?
   + **Language processing**: I used nltk package
-   for stemming and stopword removal. All the document content undergo this cleansing process. The same query terms undergo the same stemming and stopwords removal.
+   for stemming and stopword removal. This makes the indexing fast. All the document content undergo this cleansing process. The same query terms undergo the same stemming and stopwords removal.
   + **Indexing**: The core idea is to define inverted indices for the words in the corpus.
   Each row in the input file is essentially a document, document id, the document title and the document body.
   The document body is basically a set of words or tokens. In this step, an inverted index or postings for each *unique* word appearing
@@ -94,13 +94,14 @@ It starts the task with indexing the file first, then presents an interactive se
    20 | 201.9099        | 0.0068  | 10.9497
 
 
-   data size     | index  | search  | rank
-   --- |---| ---|---
-   1 | 115.0315         | 0.0002  | 0.0886
-   5 | 115.2428          | 0.0007  | 3.8074
-   10 | 117.2266         | 0.0021 | 9.3813
-   15 | 125.8265         | 0.0039  | 19.8821
-   20 | 201.9099        | 0.0068  | 10.9497
+   data size| documents  | index  | search  | rank
+   --- |---|---| ---|---
+   1 | 1010 | 1.427 | 0.0002  | 0.1599
+   5 | 5050 | 4.771 | 0.0002  | 0.7577
+   10 | 10100 | 13.2882 | 0.0006  | 3.3815
+   15 | 15149 | 23.754 | 0.0016  | 8.3064
+   20 | 20199 | 38.3652 | 0.0035  | 18.2644
+
 
 * What is the complexity?
   + **Indexing**: Let us consider a corpus contains *N* unique terms spread over *D* total documents.
