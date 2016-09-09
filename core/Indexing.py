@@ -70,10 +70,14 @@ class BuiltFileIndex:
             cnt = 0
             for doc_id, tokens in id_tokens_dict.items():
                 cnt += 1
+
                 # in each document, find the term (token) frequency
                 self.tf[doc_id] = dict(Counter(tokens))
 
                 for token in tokens:
+                    # normalised tf for unequal doc lengths
+                    self.tf[doc_id][token] /= float(len(tokens))
+
                     # track in how many documents the token appears, needed for idf
                     if token in self.df:
                         self.df[token] += 1
