@@ -45,6 +45,12 @@ rights for the script. Do the following,
 chmod 755 start.sh
 ./start.sh simplewiki.tsv (or <path-to-the-input-file>)
 ```
+It starts the task with indexing the file first, then presents an interactive search mechanism.
 
-## Methodology
 ## Discussion
+* What is the conceptual approach?
+* What are the trade-offs?
+* What's the runtime performance?
+* What is the complexity?
+* Where are the bottlenecks?
+* What improvements would you make, and in what order of priority?
