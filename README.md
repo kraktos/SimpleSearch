@@ -30,7 +30,10 @@ source <name-of-virtual-env>/bin/activate
 ```
 This completes the environment setup. It sandboxes this code base.
 
-## Execution
+## Custom Configuration
+
+There is a folder called configuration which contains a file called CONFIG.ini
+This is the single stop for all configurations. Each of them configurations are  clearly explained.
 
 Browse to the location where the code base is unzipped. For example, in Mac,
 ```
@@ -49,6 +52,19 @@ It starts the task with indexing the file first, then presents an interactive se
 
 ## Discussion
 * What is the conceptual approach?
+  + **Indexing**: The core idea is to define inverted indices for the words in the corpus.
+  Each row in the input file is essentially a document, document id, the document title and the document body.
+  The document body is basically a set of words or tokens. In this step, an inverted index or postings for each *unique* word appearing
+  in the corpus is developed by finding in which documents (represented by document ids) the token appears. It finally looks like,
+  ```
+  "music" -> [1, 22, 45, 9090, ...]
+  "america" -> [2, 3, 221, 5342, ...]
+  ...
+  ```
+  + **Searching**: Given a query term, all the postings for the query terms are retrieved.
+  In case of phrase query, individually all the lists are retrieved and an intersection of those lists are done. This intersection of values
+  gives all those documents where all the terms in the query appear.
+  + Ranking
 * What are the trade-offs?
 * What's the runtime performance?
 * What is the complexity?
