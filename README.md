@@ -35,6 +35,8 @@ This completes the environment setup. It sandboxes this code base.
 There is a folder called configuration which contains a file called CONFIG.ini
 This is the single stop for all configurations. Each of them configurations are  clearly explained.
 
+## Execution
+
 Browse to the location where the code base is unzipped. For example, in Mac,
 ```
 cd /Users/foo/SimpleSearch
@@ -81,6 +83,11 @@ It starts the task with indexing the file first, then presents an interactive se
 * What's the runtime performance?
 
 * What is the complexity?
+  + **Indexing**: Let us consider a corpus contains *N* unique terms spread over *D* total documents.
+  Under worst case, all the unique terms are present in each document. Hence, to create an inverted index for each term, complexity is O(N*D)
+  + **Searching**: This is O(1) for each query term. If query is of length *Q* terms, it is O(Q).
+  + **Ranking**: if all the documents are retrieved for a query term, worst case it is O(D*N). Since, for each document, we vectorize on the vector space of size *N*
+
 * Where are the bottlenecks?
   + With some terms the inverted index can be very large. Vectorizing all those documents over the large space takes time.
   + If new documents arrive, index building is not incremental. Needs to be re-indexed.
