@@ -119,7 +119,7 @@ class SearchIndex:
         start_time = begin_time(None)
 
         # we can filter the documents with top most term frequencies
-        result_set = self.filtered_result_set(result_set, query_terms)
+        # result_set = self.filtered_result_set(result_set, query_terms)
 
         # vectorize the result documents with tf-idf scores
         result_docs_vectorised = self.doc_vect(result_set)
@@ -165,12 +165,14 @@ class SearchIndex:
 
         query_terms = re.sub("[^\w]", " ", phrase).lower()
         result = []
+        formatted_query = []
+
         for term in query_terms.split():
             # remove stopwords from query
             if term not in self.built_index.cached_stop_words:
                 # stem words
                 term = self.built_index.stemmer.stem(term)
-
+                formatted_query.append(term)
                 result += self.single_term_query(term)
 
         # get the duplicate ones, meaning, multiple query terms share those documents
@@ -178,6 +180,8 @@ class SearchIndex:
 
         end_time("Document search", start_time)
 
+        query_terms = ' '.join(formatted_query)
+        
         if len(intersection) == 0:
             if len(query_terms.split()) <= 1:  # phrase query
                 self.rank_results(result, query_terms)

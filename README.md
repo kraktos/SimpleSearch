@@ -85,14 +85,6 @@ It starts the task with indexing the file first, then presents an interactive se
 * What's the runtime performance?
   I present a table here.
 
-   data size     | index         | search  | rank
-   --- |---| ---|---
-   1 | 1.62          | 0.0001  | 0.1305
-   5 | 16.32          | 0.0007  | 1.3124
-   10 | 54.1322         | 0.0021 | 3.899
-   15 | 114.9356          | 0.003  | 8.468
-   20 | 201.9099        | 0.0068  | 10.9497
-
 
    data size| documents  | index  | search  | rank
    --- |---|---| ---|---
@@ -100,7 +92,8 @@ It starts the task with indexing the file first, then presents an interactive se
    5 | 5050 | 4.771 | 0.0002  | 0.7577
    10 | 10100 | 13.2882 | 0.0006  | 3.3815
    15 | 15149 | 23.754 | 0.0016  | 8.3064
-   20 | 20199 | 38.3652 | 0.0035  | 18.2644
+   20 | 20199 | 38.3652 | 0.0239  | 18.2644
+   50 | 50496 | 142.8772 | 0.0035  | 81.714
 
 
 * What is the complexity?
