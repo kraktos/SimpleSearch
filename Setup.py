@@ -7,4 +7,4 @@ config = ConfigParser.ConfigParser()
 config.read('CONFIG.ini')
 
 # general settings
-S3Region = config.get('default', 's3_region')
+top_k_results = int(config.get('default', 'top_k'))

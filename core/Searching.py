@@ -1,6 +1,7 @@
 from utils.Utility import begin_time, end_time
 import re
 import math
+import Setup as setup
 
 
 class SearchIndex:
@@ -18,24 +19,53 @@ class SearchIndex:
         OUTPUT
             vector space representation of each [doc1 => [0.3, 0.11, 0.01, ...], doc2 => [0.001, 0.08, ...]]
         """
+        start_time = begin_time(None)
+
         temp_dict = {}
         unique_words = self.inverted_index.keys()
 
         # since the tf-idf scores are all precomputed during index time,
         # this is just fetching the scores as needed.
+
         for doc in result_docs:
             # the vector has as many dimensions as number of unique words/tokens in the corpus
             vectorised_doc = [0] * len(unique_words)
             try:
-                for ind, term in enumerate(unique_words):
+                ind = 0
+                for term in unique_words:
                     vectorised_doc[ind] = self.built_index.get_tfidf_scores(term, doc)
+                    ind += 1
+
+                # hash map it
+                temp_dict[doc] = vectorised_doc
+
             except Exception as ex:
                 raise Exception("Exception while vectorising", ex)
 
-            # hash map it
-            temp_dict[doc] = vectorised_doc
+        end_time("only docs ", start_time)
 
         return temp_dict
+
+    def query_vect(self, query):
+        """
+        Vectorizes a given query.
+        """
+        # init vector
+        q_vect = [0] * len(query)
+        for ind, word in enumerate(query):
+            q_vect[ind] = self.query_freq(word, query)
+
+        # idf remains the same, just retrieve from the index class
+        query_idf = [self.built_index.idf[word] for word in self.inverted_index]
+
+        # compute the tf for the query terms
+        freq = self.query_term_freq(self.inverted_index.keys(), query)
+        query_tf = [x for x in freq]
+
+        # eventually, the tf-idf vector for the query
+        final_query_vector = [query_tf[i] * query_idf[i] for i in range(len(self.inverted_index))]
+
+        return final_query_vector
 
     def query_freq(self, term, query):
         count = 0
@@ -49,31 +79,14 @@ class SearchIndex:
         find term frequencies for the query
         """
         temp = [0] * len(terms_bow)
-        for i, term in enumerate(terms_bow):
+        cntr = 0
+        # for i, term in enumerate(terms_bow):
+        for term in terms_bow:
             # check which terms in the query appear in the bag of words
-            temp[i] = self.query_freq(term, query)
+            temp[cntr] = self.query_freq(term, query)
+            cntr += 1
+
         return temp
-
-    def query_vect(self, query):
-        """
-        Vectorizes a given query.
-        """
-        # init vector
-        q_vect = [0] * len(query)
-        for ind, word in enumerate(query):
-            q_vect[ind] = self.query_freq(word, query)
-
-        # idf remains the same, just retrieve from the index class
-        query_idf = [self.built_index.idf[word] for word in self.inverted_index.keys()]
-
-        # compute the tf for the query terms
-        freq = self.query_term_freq(self.inverted_index.keys(), query)
-        tf = [x for x in freq]
-
-        # eventually, the tf-idf vector for the query
-        final_query_vector = [tf[i] * query_idf[i] for i in range(len(self.inverted_index.keys()))]
-
-        return final_query_vector
 
     def dot_product(self, vector_1, vector_2):
         if len(vector_1) != len(vector_2):
@@ -121,11 +134,10 @@ class SearchIndex:
         # fancy printing
         print "Search Results:\n--------------"
         cnt = 0
-        for result in results:
-            cnt += 1
+        while cnt < min(setup.top_k_results, len(results)):
+            result = results[cnt]
             print "{}\t{}".format(result, self.titles_map[result])
-            if cnt == 10:
-                break
+            cnt += 1
 
     def single_term_query(self, query_term):
         """
@@ -150,6 +162,7 @@ class SearchIndex:
         intersection = set([x for x in result if result.count(x) > 1])
 
         if len(intersection) == 0:
-            self.rank_results(result, query_terms)
+            if len(query_terms.split()) <= 1: # phrase query
+                self.rank_results(result, query_terms)
         else:
             self.rank_results(list(intersection), query_terms)

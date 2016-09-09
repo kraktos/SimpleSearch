@@ -53,7 +53,7 @@ class BuiltFileIndex:
             w33 => [doc101, doc433, ...]
         """
         start_time = begin_time("Inverted Index Building")
-        id_tokens_dict = {k: v for k, v in id_tokens_dict.items() if 10 <= k <= 20000}
+        # id_tokens_dict = {k: v for k, v in id_tokens_dict.items() if k <= 1000}
         try:
             cnt = 0
             for doc_id, tokens in id_tokens_dict.items():
@@ -78,7 +78,7 @@ class BuiltFileIndex:
                         # fresh entry
                         self.complete_inverted_index[token] = [doc_id]
 
-                if cnt % 1000 == 0 and cnt > 1000:
+                if cnt % 10000 == 0 and cnt > 10000:
                     print "{}% completed".format(round(100 * cnt/float(len(id_tokens_dict))), 2)
         except Exception as ex:
             raise Exception("Exception creating inverted index", ex)

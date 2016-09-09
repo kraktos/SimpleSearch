@@ -29,7 +29,7 @@ if __name__ == "__main__":
 
         # if not present throw exception
         if input_file is None:
-            raise Exception
+            raise Exception("Missing Input File!")
 
         # index the file
         indexer = BuiltFileIndex()
@@ -48,4 +48,4 @@ if __name__ == "__main__":
             searcher.search(var)
 
     except Exception as ex:
-        raise Exception("Please provide the file to index..")
+        raise Exception(ex)
