@@ -37,9 +37,9 @@ class BuiltFileIndex:
         for index, row in file_df.iterrows():
             # key is the document id,
             # value is the list of words in that document
-            # No stemming and stopwords removal yet
             content = re.sub("[^\w]", " ", row['doc_body'].lower())
 
+            # stemmed and stop words removed
             clean_content = [self.stemmer.stem(word.rstrip().lstrip()) for word in content.lower().split() if
                              word not in self.cached_stop_words and len(word) > 0]
             self.id_tokens_map[row['doc_id']] = clean_content

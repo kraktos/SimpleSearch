@@ -103,11 +103,23 @@ class SearchIndex:
         return sum([i * j for i, j in zip(vector_1, vector_2)]) / (
             math.sqrt(sum([i * i for i in vector_1])) * math.sqrt(sum([i * i for i in vector_2])))
 
+    def filtered_result_set(self, result_set, query_terms):
+        sort_val = {}
+        for doc in result_set:
+            for term in query_terms.split():
+                sort_val[doc] = self.built_index.tf[doc][term]
+
+        sort_val = sorted(sort_val.items(), key=lambda x: x[1], reverse=True)[:setup.top_k_results]
+        return [elem[0] for elem in sort_val]
+
     def rank_results(self, result_set, query_terms):
         """
         ranking algorithm. Basically matches two vectorised representation of the query and the resultant document list
         """
         start_time = begin_time(None)
+
+        # we can filter the documents with top most term frequencies
+        result_set = self.filtered_result_set(result_set, query_terms)
 
         # vectorize the result documents with tf-idf scores
         result_docs_vectorised = self.doc_vect(result_set)
@@ -167,7 +179,7 @@ class SearchIndex:
         end_time("Document search", start_time)
 
         if len(intersection) == 0:
-            if len(query_terms.split()) <= 1: # phrase query
+            if len(query_terms.split()) <= 1:  # phrase query
                 self.rank_results(result, query_terms)
         else:
             self.rank_results(list(intersection), query_terms)
