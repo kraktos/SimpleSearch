@@ -97,7 +97,7 @@ It starts the task with indexing the file first, then presents an interactive se
    --- |---|---| ---|--- | ---
    10 | 10100 | 41.0728 | 0.0001  | 0.0008 | 3.3815
    20 | 20199 | 101.4531 | 0.0001  | 0.0027 | 18.2644
-   30 | 30298 | 164.2671  | 0.0138 | 0.0021 | -
+   30 | 30298 | 164.2671  | 0.0138 | 0.0021 | 30.2356
    50 | 50496 | 305.7042  | 0.0223 | 0.0047 | 81.714
 
 
@@ -115,6 +115,6 @@ It starts the task with indexing the file first, then presents an interactive se
   + for very large inverted indices, in-memory solutions would fail. Bit-compression may help.
 
 * What improvements would you make, and in what order of priority?
-  + implemented better relevance ranking models (BM25 or probabilistic rankings)
-  + parallelized implementation whereever possible
+  + implement better relevance ranking models (BM25 or probabilistic rankings)
+  + parallelized implementation wherever possible
   + Even further, index partioning over multiple nodes. So, clusters might help here.
