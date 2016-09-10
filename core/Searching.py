@@ -1,7 +1,7 @@
-from utils.Utility import begin_time, end_time
-import re
 import math
-import Setup as setup
+import re
+
+from utils.Utility import begin_time, end_time
 
 
 class SearchIndex:
@@ -124,7 +124,7 @@ class SearchIndex:
         start_time = begin_time(None)
 
         # Naive way: rank by frequency of occurrence in the document
-        if setup.fast_search:
+        if Setup.fast_search:
             results = self.filtered_result_set(result_set, query_terms)
 
         # Vectorised by tf-idf and document similarity by vector dot product
@@ -151,7 +151,7 @@ class SearchIndex:
         # fancy printing
         print "Search Results:\n--------------"
         cnt = 0
-        while cnt < min(setup.top_k_results, len(results)):
+        while cnt < min(Setup.top_k_results, len(results)):
             result = results[cnt]
             print "{}\t{}".format(result, self.titles_map[result])
             cnt += 1

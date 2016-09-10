@@ -1,14 +1,16 @@
 """
 This class is responsible for building the inverted indices for the terms in the provided input file
 """
-import re
-import pandas as pd
-from utils.Utility import begin_time, end_time
-from collections import Counter
 import math
-import Setup as setup
-from nltk.corpus import stopwords
+import re
+from collections import Counter
+
+import pandas as pd
 from nltk import PorterStemmer
+from nltk.corpus import stopwords
+
+from utils.Utility import begin_time, end_time
+import configs.Setup as Setup
 
 
 class BuiltFileIndex:
@@ -48,7 +50,7 @@ class BuiltFileIndex:
             self.id_titles_map[row['doc_id']] = row['doc_title']
 
             perc_completed = 100 * index / float(len(file_df))
-            if perc_completed > setup.data_set_limit:
+            if perc_completed > Setup.data_set_limit:
                 print "indexed {} documents".format(index)
                 break
 
