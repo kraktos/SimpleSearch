@@ -119,29 +119,31 @@ class SearchIndex:
         """
         start_time = begin_time(None)
 
-        # we can filter the documents with top most term frequencies
-        # this spoils the results
-        result_set = self.filtered_result_set(result_set, query_terms)
+        # Naive way: rank by frequency of occurrence in the document
+        if setup.fast_search:
+            results = self.filtered_result_set(result_set, query_terms)
 
-        # vectorize the result documents with tf-idf scores
-        # result_docs_vectorised = self.doc_vect(result_set)
+        # Vectorised by tf-idf and document similarity by vector dot product
+        # this is slower than the former one
+        else:
+            # vectorize the result documents with tf-idf scores
+            result_docs_vectorised = self.doc_vect(result_set)
 
-        # vectorize the query terms with tf-idf again
-        # query_vectorised = self.query_vect(query_terms)
+            # vectorize the query terms with tf-idf again
+            query_vectorised = self.query_vect(query_terms)
 
-        # find the cosine similarity between result vectors and query vector
-        # results = [[self.dot_product(result_docs_vectorised[result], query_vectorised), result] for result in
-        #            result_set]
+            # find the cosine similarity between result vectors and query vector
+            results = [[self.dot_product(result_docs_vectorised[result], query_vectorised), result] for result in
+                       result_set]
 
-        # sort by descending similarity values
-        # results.sort(key=lambda x: x[0], reverse=True)
+            # sort by descending similarity values
+            results.sort(key=lambda x: x[0], reverse=True)
+
+            # grab the document ids
+            results = [x[1] for x in results]
 
         end_time("Ranking", start_time)
 
-        # grab the document ids
-        # results = [x[1] for x in results]
-
-        results = result_set
         # fancy printing
         print "Search Results:\n--------------"
         cnt = 0
@@ -179,7 +181,9 @@ class SearchIndex:
                 result += self.single_term_query(term)
 
         # get the duplicate ones, meaning, multiple query terms share those documents
-        intersection = set([x for x in result if result.count(x) > 1])
+        # for 3 term query we want the count of duplicates to be > 2
+        limit = max(1, len(formatted_query) - 1)
+        intersection = set([x for x in result if result.count(x) > limit])
 
         end_time("Document search", start_time)
 

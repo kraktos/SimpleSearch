@@ -87,14 +87,12 @@ It starts the task with indexing the file first, then presents an interactive se
   I present a table here.
 
 
-   data size| documents  | index  | search  | rank
-   --- |---|---| ---|---
-   1 | 1010 | 1.427 | 0.0002  | 0.1599
-   5 | 5050 | 4.771 | 0.0002  | 0.7577
-   10 | 10100 | 13.2882 | 0.0006  | 3.3815
-   15 | 15149 | 23.754 | 0.0016  | 8.3064
-   20 | 20199 | 38.3652 | 0.0239  | 18.2644
-   50 | 50496 | 142.8772 | 0.0035  | 81.714
+   data size| #documents  | index (secs)  | search(secs)  | rank(naive) | rank(tf-idf)
+   --- |---|---| ---|--- | ---
+   10 | 10100 | 41.0728 | 0.0001  | 0.0008 | -
+   20 | 20199 | 101.4531 | 0.0001  | 0.0027 | -
+   20 | 30298 | 164.2671  | 0.0138 | 0.0021 | -
+
 
 
 * What is the complexity?

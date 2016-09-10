@@ -38,7 +38,7 @@ if __name__ == "__main__":
         # query the index,
         searcher = SearchIndex(indexer)
 
-        var = ""
+        var = None
         while var != 'q':
             var = raw_input("Enter search item (press q to exit). ")
             if var.lower() == 'q':
