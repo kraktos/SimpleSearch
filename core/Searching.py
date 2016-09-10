@@ -2,6 +2,7 @@ import math
 import re
 
 from utils.Utility import begin_time, end_time
+import configs.Setup as Setup
 
 
 class SearchIndex:
