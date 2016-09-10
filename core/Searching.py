@@ -106,9 +106,13 @@ class SearchIndex:
     def filtered_result_set(self, result_set, query_terms):
         sort_val = {}
         for doc in result_set:
+            sum_of_frequencies = 0
             for term in query_terms.split():
                 if term in self.built_index.tf[doc]:
-                    sort_val[doc] = self.built_index.tf[doc][term]
+                    sum_of_frequencies += self.built_index.tf[doc][term]
+
+            # for multi term query, the frequency is sum of frequencies for each term
+            sort_val[doc] = sum_of_frequencies
 
         sort_val = sorted(sort_val.items(), key=lambda x: x[1], reverse=True)
         return [elem[0] for elem in sort_val]

@@ -91,7 +91,8 @@ It starts the task with indexing the file first, then presents an interactive se
    --- |---|---| ---|--- | ---
    10 | 10100 | 41.0728 | 0.0001  | 0.0008 | -
    20 | 20199 | 101.4531 | 0.0001  | 0.0027 | -
-   20 | 30298 | 164.2671  | 0.0138 | 0.0021 | -
+   30 | 30298 | 164.2671  | 0.0138 | 0.0021 | -
+   50 | 50496 | 305.7042  | 0.0223 | 0.0047 | -
 
 
 
@@ -99,7 +100,8 @@ It starts the task with indexing the file first, then presents an interactive se
   + **Indexing**: Let us consider a corpus contains *N* unique terms spread over *D* total documents.
   Under worst case, all the unique terms are present in each document. Hence, to create an inverted index for each term, complexity is O(N*D)
   + **Searching**: This is O(1) for each query term. If query is of length *Q* terms, it is O(Q).
-  + **Ranking**: if all the documents are retrieved for a query term, worst case it is O(DN). Since, for each document, I vectorize on the vector space of size *N*
+  + **Ranking (tf-idf)**: if all the documents are retrieved for a query term, worst case it is O(DN). Since, for each document, we vectorize on the vector space of size *N*
+  + **Ranking (naive)**:If all *D* documents are retrieved, it is O(DlogD) since we sort the result.
 
 * Where are the bottlenecks?
   + With some terms the inverted index can be very large. Vectorizing all those documents over the large space takes time.
@@ -107,5 +109,5 @@ It starts the task with indexing the file first, then presents an interactive se
   + for very large inverted indices, in-memory solutions would fail. Bit-compression may help.
 
 * What improvements would you make, and in what order of priority?
+  + parallelized implementation whereever possible
   + Even further, index partioning over multiple nodes. So, clusters might help here.
-  + parallelized indexing with threading
