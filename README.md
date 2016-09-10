@@ -44,8 +44,8 @@ cd /Users/foo/SimpleSearch
 
 The location will have a shell script which simplifies the whole execution along with installing the required libraries.
 However, I used only pandas and nothing else. But if needed, one can simply add dependencies in the
-*requirements.txt* and the script will take care of the rest. However, to make it executable, we need to change the
-rights for the script. Do the following,
+*requirements.txt* and the script will take care of the rest. However, to make it executable, I need to change the
+rights for the script. Please do the following,
 ```
 chmod 755 start.sh
 ./start.sh simplewiki.tsv (or <path-to-the-input-file>)
@@ -72,7 +72,8 @@ It starts the task with indexing the file first, then presents an interactive se
   ```
   "pop music" -> [2, 11]
   ```
-  + **Ranking**: Retrieving a set of documents is not just enough but ranking them in the order of
+  + **Ranking**:
+  Retrieving a set of documents is not just enough but ranking them in the order of
   relevance is important. In order to do this, the query and the documents retrieved are represented in a vector space with a large number of dimensions.
   Ideally, the number of unique terms in the corpus defines the dimension. For example, the final resultant documents, 2 and 11 wil have vector representations in such a space.
   But trick is, instead of just putting a 1 in the "music" dimension for doc 2 is wrong. We substitute that with the *tf-idf* score for that term in that document. It captures both, how popular is the word "music" in doc 2 and how popular is "music" in the whole corpus.
@@ -100,7 +101,7 @@ It starts the task with indexing the file first, then presents an interactive se
   + **Indexing**: Let us consider a corpus contains *N* unique terms spread over *D* total documents.
   Under worst case, all the unique terms are present in each document. Hence, to create an inverted index for each term, complexity is O(N*D)
   + **Searching**: This is O(1) for each query term. If query is of length *Q* terms, it is O(Q).
-  + **Ranking**: if all the documents are retrieved for a query term, worst case it is O(DN). Since, for each document, we vectorize on the vector space of size *N*
+  + **Ranking**: if all the documents are retrieved for a query term, worst case it is O(DN). Since, for each document, I vectorize on the vector space of size *N*
 
 * Where are the bottlenecks?
   + With some terms the inverted index can be very large. Vectorizing all those documents over the large space takes time.

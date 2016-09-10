@@ -76,7 +76,7 @@ class BuiltFileIndex:
 
                 for token in tokens:
                     # normalised tf for unequal doc lengths
-                    self.tf[doc_id][token] /= float(len(tokens))
+                    # self.tf[doc_id][token] /= float(len(tokens))
 
                     # track in how many documents the token appears, needed for idf
                     if token in self.df:

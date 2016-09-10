@@ -107,9 +107,10 @@ class SearchIndex:
         sort_val = {}
         for doc in result_set:
             for term in query_terms.split():
-                sort_val[doc] = self.built_index.tf[doc][term]
+                if term in self.built_index.tf[doc]:
+                    sort_val[doc] = self.built_index.tf[doc][term]
 
-        sort_val = sorted(sort_val.items(), key=lambda x: x[1], reverse=True)[:setup.top_k_results]
+        sort_val = sorted(sort_val.items(), key=lambda x: x[1], reverse=True)
         return [elem[0] for elem in sort_val]
 
     def rank_results(self, result_set, query_terms):
@@ -119,26 +120,28 @@ class SearchIndex:
         start_time = begin_time(None)
 
         # we can filter the documents with top most term frequencies
-        # result_set = self.filtered_result_set(result_set, query_terms)
+        # this spoils the results
+        result_set = self.filtered_result_set(result_set, query_terms)
 
         # vectorize the result documents with tf-idf scores
-        result_docs_vectorised = self.doc_vect(result_set)
+        # result_docs_vectorised = self.doc_vect(result_set)
 
         # vectorize the query terms with tf-idf again
-        query_vectorised = self.query_vect(query_terms)
+        # query_vectorised = self.query_vect(query_terms)
 
         # find the cosine similarity between result vectors and query vector
-        results = [[self.dot_product(result_docs_vectorised[result], query_vectorised), result] for result in
-                   result_set]
+        # results = [[self.dot_product(result_docs_vectorised[result], query_vectorised), result] for result in
+        #            result_set]
 
         # sort by descending similarity values
-        results.sort(key=lambda x: x[0], reverse=True)
+        # results.sort(key=lambda x: x[0], reverse=True)
 
         end_time("Ranking", start_time)
 
         # grab the document ids
-        results = [x[1] for x in results]
+        # results = [x[1] for x in results]
 
+        results = result_set
         # fancy printing
         print "Search Results:\n--------------"
         cnt = 0
