@@ -30,10 +30,12 @@ source <name-of-virtual-env>/bin/activate
 ```
 This completes the environment setup. It sandboxes this code base.
 
-## Custom Configuration
+N.B. If you have a python setup with conda, then setting up virtualenv is bit different.
+
+## Configuration
 
 There is a folder called configuration which contains a file called **CONFIG.ini**
-This is the single stop for all configurations. Each of them configurations are  clearly explained.
+This is the single stop for all configurations. Each of the configurations are  clearly explained.
 
 ## Execution
 
@@ -64,6 +66,7 @@ Then from the project root folder, issue the following command
 python -m unittest discover -s tests -p 'Test*.py'
 ```
 
+This runs all the uni test cases and reports if something fails.
 
 ## Discussion
 * What is the conceptual approach?
@@ -71,6 +74,7 @@ python -m unittest discover -s tests -p 'Test*.py'
    for stemming and stopword removal. Stopwords removal reduces number of unique words in the corpus, and stemming reduces
    different variation of the word to one standard form hence making the indices agnostic to word variations (for e.g. happiness, happy  have the same stem)
    All the document content undergo this cleansing process. The query terms undergo the same stemming and stopwords removal.
+   Although this is not the most important step, but this is good practice. We do not want to waste time indexing common stopwords!
 
   + **Indexing**: The core idea is to define inverted indices for the words in the corpus.
   Each row in the input file is essentially a document, document id, the document title and the document body.

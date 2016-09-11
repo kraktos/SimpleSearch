@@ -6,6 +6,7 @@ import re
 from collections import Counter
 
 import pandas as pd
+import nltk as nltk
 from nltk import PorterStemmer
 from nltk.corpus import stopwords
 
@@ -15,6 +16,10 @@ import configs.Setup as Setup
 
 class BuiltFileIndex:
     def __init__(self):
+
+        # download the stopwords corpora only
+        nltk.download('stopwords')
+
         self.tf = {}
         self.df = {}
         self.idf = {}
