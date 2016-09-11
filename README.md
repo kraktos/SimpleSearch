@@ -117,4 +117,5 @@ It starts the task with indexing the file first, then presents an interactive se
 * What improvements would you make, and in what order of priority?
   + implement better relevance ranking models (BM25 or probabilistic rankings)
   + parallelized implementation wherever possible
-  + Even further, index partioning over multiple nodes. So, clusters might help here.
+  + evaluation of results, against some available gold standard for the dataset or create one.
+  + Even further, index partitioning over multiple nodes. So, clusters might help here.
