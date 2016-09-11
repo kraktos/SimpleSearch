@@ -132,6 +132,7 @@ This runs all the uni test cases and reports if something fails.
   + for very large inverted indices, in-memory solutions would fail. Bit-compression may help.
 
 * What improvements would you make, and in what order of priority?
+  + dumping indices to local file system..in order ro avoid repeated re-indexing
   + implement better relevance ranking models (BM25 or probabilistic rankings)
   + parallelized implementation wherever possible
   + evaluation of results, against some available gold standard for the dataset or create one.
