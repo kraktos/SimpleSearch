@@ -61,7 +61,7 @@ data_set_limit : 100
 ```
 Then from the project root folder, issue the following command
 ```
-python -m unittest discover .
+python -m unittest discover -s tests -p 'Test*.py'
 ```
 
 
