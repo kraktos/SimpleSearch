@@ -11,6 +11,7 @@ class SearchIndex:
         self.built_index = indexer
         self.inverted_index = self.built_index.complete_inverted_index
         self.titles_map = self.built_index.id_titles_map
+        self.results = []
 
     def doc_vect(self, result_docs):
         """
@@ -149,13 +150,7 @@ class SearchIndex:
 
         end_time("Ranking", start_time)
 
-        # fancy printing
-        print "Search Results:\n--------------"
-        cnt = 0
-        while cnt < min(Setup.top_k_results, len(results)):
-            result = results[cnt]
-            print "{}\t{}".format(result, self.titles_map[result])
-            cnt += 1
+        return results
 
     def single_term_query(self, query_term):
         """
@@ -193,9 +188,17 @@ class SearchIndex:
         end_time("Document search", start_time)
 
         query_terms = ' '.join(formatted_query)
-        
+
         if len(intersection) == 0:
             if len(query_terms.split()) <= 1:  # phrase query
-                self.rank_results(result, query_terms)
+                self.results = self.rank_results(result, query_terms)
         else:
-            self.rank_results(list(intersection), query_terms)
+            self.results = self.rank_results(list(intersection), query_terms)
+
+        # fancy printing
+        print "Search Results:\n--------------"
+        cnt = 0
+        while cnt < min(Setup.top_k_results, len(self.results)):
+            result = self.results[cnt]
+            print "{}\t{}".format(result, self.titles_map[result])
+            cnt += 1

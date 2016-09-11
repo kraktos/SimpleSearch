@@ -52,6 +52,19 @@ chmod 755 start.sh
 ```
 It starts the task with indexing the file first, then presents an interactive search mechanism.
 
+## Unit tests
+The tests folder contains a set of test cases, simple ones, to validate the basic functionality of the implementation.
+The folder also contains a *sample.tsv* file for unit testing. To run the unit tests, perform the following:
+```
+# in the CONFIG.ini file set this
+data_set_limit : 100
+```
+Then from the project root folder, issue the following command
+```
+python -m unittest discover .
+```
+
+
 ## Discussion
 * What is the conceptual approach?
   + **Language processing**: I used nltk package
